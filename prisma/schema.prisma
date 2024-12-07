@@ -1,0 +1,123 @@
+// Prisma Schema with String Types
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  fullName        String
+  age             Int
+  gender          String
+  sexualPreferences String? 
+  religion        String?
+  culture         String?
+  language        String?
+  heardAboutUs    String?  
+  role            String    @default("CUSTOMER")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt()
+
+  // Relationships
+  customer        Customer?
+  practitioner    Practitioner?
+  userLanguages   UserLanguage[]
+  userCultures    UserCulture[]
+}
+
+model Customer {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  user      User    @relation(fields: [userId], references: [id])
+  sessions  Session[]
+}
+
+model Practitioner {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique
+  user         User      @relation(fields: [userId], references: [id])
+  type         String
+  bio          String
+  availability Availability[]
+  sessions     Session[]
+
+  // Many-to-Many Relationships
+  practitionerSpecialties PractitionerSpecialty[]
+  practitionerLanguages   UserLanguage[]
+  practitionerCultures    UserCulture[]
+
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt()
+}
+
+model Language {
+  id            Int     @id @default(autoincrement())
+  name          String  @unique
+  userLanguages UserLanguage[]
+}
+
+model UserLanguage {
+  id           Int       @id @default(autoincrement())
+  userId       Int?
+  user         User?     @relation(fields: [userId], references: [id])
+  practitionerId Int?
+  practitioner Practitioner? @relation(fields: [practitionerId], references: [id])
+  languageId   Int
+  language     Language  @relation(fields: [languageId], references: [id])
+}
+
+model Culture {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique
+  userCultures UserCulture[]
+}
+
+model UserCulture {
+  id           Int       @id @default(autoincrement())
+  userId       Int?
+  user         User?     @relation(fields: [userId], references: [id])
+  practitionerId Int?
+  practitioner Practitioner? @relation(fields: [practitionerId], references: [id])
+  cultureId    Int
+  culture      Culture   @relation(fields: [cultureId], references: [id])
+}
+
+model Specialty {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique
+  practitionerSpecialties PractitionerSpecialty[]
+}
+
+model PractitionerSpecialty {
+  id              Int           @id @default(autoincrement())
+  practitionerId  Int
+  practitioner    Practitioner  @relation(fields: [practitionerId], references: [id])
+  specialtyId     Int
+  specialty       Specialty     @relation(fields: [specialtyId], references: [id])
+}
+
+model Availability {
+  id             Int         @id @default(autoincrement())
+  practitionerId Int
+  startTime      DateTime
+  endTime        DateTime
+  practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+}
+
+model Session {
+  id             Int          @id @default(autoincrement())
+  practitionerId Int
+  customerId     Int?
+  sessionFormat  String
+  startTime      DateTime
+  endTime        DateTime
+  practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+  customer       Customer?    @relation(fields: [customerId], references: [id])
+}
