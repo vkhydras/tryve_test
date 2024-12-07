@@ -10,40 +10,43 @@ datasource db {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique
-  fullName        String
-  age             Int
-  gender          String
-  sexualPreferences String? 
-  religion        String?
-  culture         String?
-  language        String?
-  heardAboutUs    String?  
-  role            String    @default("CUSTOMER")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt()
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  fullName          String
+  age               Int?
+  gender            String?
+  sexualPreferences String?
+  religion          String?
+  culture           String?
+  language          String?
+  heardAboutUs      String?
+  role              String   @default("CUSTOMER")
+  password          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt()
 
   // Relationships
-  customer        Customer?
-  practitioner    Practitioner?
-  userLanguages   UserLanguage[]
-  userCultures    UserCulture[]
+  customer      Customer?
+  practitioner  Practitioner?
+  userLanguages UserLanguage[]
+  userCultures  UserCulture[]
 }
 
 model Customer {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id])
-  sessions  Session[]
+  id                       Int                     @id @default(autoincrement())
+  userId                   Int                     @unique
+  user                     User                    @relation(fields: [userId], references: [id])
+  practitioner_preferences String?
+  sessions                 Session[]
+  customerNeedSpecialties  CustomerNeedSpecialty[]
 }
 
 model Practitioner {
-  id           Int       @id @default(autoincrement())
-  userId       Int       @unique
-  user         User      @relation(fields: [userId], references: [id])
-  type         String
-  bio          String
+  id           Int            @id @default(autoincrement())
+  userId       Int            @unique
+  user         User           @relation(fields: [userId], references: [id])
+  type         String?
+  bio          String?
   availability Availability[]
   sessions     Session[]
 
@@ -53,58 +56,70 @@ model Practitioner {
   practitionerCultures    UserCulture[]
 
   // Timestamps
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model Specialty {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  // Relationships
+  practitionerSpecialties PractitionerSpecialty[]
+  customerNeedSpecialties CustomerNeedSpecialty[]
+}
+
+model PractitionerSpecialty {
+  id             Int          @id @default(autoincrement())
+  practitionerId Int
+  practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+  specialtyId    Int
+  specialty      Specialty    @relation(fields: [specialtyId], references: [id])
+}
+
+model CustomerNeedSpecialty {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  specialtyId Int
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
 }
 
 model Language {
-  id            Int     @id @default(autoincrement())
-  name          String  @unique
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
   userLanguages UserLanguage[]
 }
 
 model UserLanguage {
-  id           Int       @id @default(autoincrement())
-  userId       Int?
-  user         User?     @relation(fields: [userId], references: [id])
+  id             Int           @id @default(autoincrement())
+  userId         Int?
+  user           User?         @relation(fields: [userId], references: [id])
   practitionerId Int?
-  practitioner Practitioner? @relation(fields: [practitionerId], references: [id])
-  languageId   Int
-  language     Language  @relation(fields: [languageId], references: [id])
+  practitioner   Practitioner? @relation(fields: [practitionerId], references: [id])
+  languageId     Int
+  language       Language      @relation(fields: [languageId], references: [id])
 }
 
 model Culture {
-  id           Int     @id @default(autoincrement())
-  name         String  @unique
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
   userCultures UserCulture[]
 }
 
 model UserCulture {
-  id           Int       @id @default(autoincrement())
-  userId       Int?
-  user         User?     @relation(fields: [userId], references: [id])
+  id             Int           @id @default(autoincrement())
+  userId         Int?
+  user           User?         @relation(fields: [userId], references: [id])
   practitionerId Int?
-  practitioner Practitioner? @relation(fields: [practitionerId], references: [id])
-  cultureId    Int
-  culture      Culture   @relation(fields: [cultureId], references: [id])
-}
-
-model Specialty {
-  id                     Int                      @id @default(autoincrement())
-  name                   String                   @unique
-  practitionerSpecialties PractitionerSpecialty[]
-}
-
-model PractitionerSpecialty {
-  id              Int           @id @default(autoincrement())
-  practitionerId  Int
-  practitioner    Practitioner  @relation(fields: [practitionerId], references: [id])
-  specialtyId     Int
-  specialty       Specialty     @relation(fields: [specialtyId], references: [id])
+  practitioner   Practitioner? @relation(fields: [practitionerId], references: [id])
+  cultureId      Int
+  culture        Culture       @relation(fields: [cultureId], references: [id])
 }
 
 model Availability {
-  id             Int         @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   practitionerId Int
   startTime      DateTime
   endTime        DateTime

@@ -1,7 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 export default function TherapistQuizStep4() {
   return (
@@ -14,50 +26,57 @@ export default function TherapistQuizStep4() {
         <CardContent>
           <form className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="orientation" className="text-sm font-medium">Sexual Orientation</label>
+              <label htmlFor="orientation" className="text-sm font-medium">
+                Sexual Orientation
+              </label>
               <Select>
                 <SelectTrigger id="orientation">
                   <SelectValue placeholder="Select your sexual orientation" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white opacity-100">
                   <SelectItem value="heterosexual">Heterosexual</SelectItem>
                   <SelectItem value="homosexual">Homosexual</SelectItem>
                   <SelectItem value="bisexual">Bisexual</SelectItem>
                   <SelectItem value="pansexual">Pansexual</SelectItem>
                   <SelectItem value="asexual">Asexual</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
-                  <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  <SelectItem value="prefer-not-to-say">
+                    Prefer not to say
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <label htmlFor="gender" className="text-sm font-medium">Gender Identity</label>
+              <label htmlFor="gender" className="text-sm font-medium">
+                Gender Identity
+              </label>
               <Select>
                 <SelectTrigger id="gender">
                   <SelectValue placeholder="Select your gender identity" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white opacity-100">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="non-binary">Non-binary</SelectItem>
                   <SelectItem value="transgender">Transgender</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
-                  <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  <SelectItem value="prefer-not-to-say">
+                    Prefer not to say
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex justify-between">
               <Button variant="outline" asChild>
-                <Link href="/quiz/therapist/step3">Back</Link>
+                <Link href="step3">Back</Link>
               </Button>
               <Button asChild>
-                <Link href="/quiz/therapist/step5">Next</Link>
+                <Link href="step5">Next</Link>
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

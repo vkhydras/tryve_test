@@ -34,10 +34,10 @@ export default function TherapistQuizStep2() {
             </div>
             <div className="flex justify-between">
               <Button variant="outline" asChild>
-                <Link href="/quiz/therapist/step1">Back</Link>
+                <Link href="step1">Back</Link>
               </Button>
               <Button asChild>
-                <Link href="/quiz/therapist/step3">Next</Link>
+                <Link href="step3">Next</Link>
               </Button>
             </div>
           </form>

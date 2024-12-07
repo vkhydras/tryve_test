@@ -1,8 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 export default function CustomerQuizStep2() {
   return (
@@ -15,35 +27,44 @@ export default function CustomerQuizStep2() {
         <CardContent>
           <form className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="age" className="text-sm font-medium">Age</label>
+              <label htmlFor="age" className="text-sm font-medium">
+                Age
+              </label>
               <Input id="age" type="number" placeholder="Enter your age" />
             </div>
             <div className="space-y-2">
-              <label htmlFor="timezone" className="text-sm font-medium">Time Zone</label>
+              <label htmlFor="timezone" className="text-sm font-medium">
+                Time Zone
+              </label>
               <Select>
                 <SelectTrigger id="timezone">
                   <SelectValue placeholder="Select your time zone" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-                  <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-                  <SelectItem value="cet">Central European Time (CET)</SelectItem>
+                  <SelectItem value="pst">
+                    Pacific Standard Time (PST)
+                  </SelectItem>
+                  <SelectItem value="est">
+                    Eastern Standard Time (EST)
+                  </SelectItem>
+                  <SelectItem value="cet">
+                    Central European Time (CET)
+                  </SelectItem>
                   <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex justify-between">
               <Button variant="outline" asChild>
-                <Link href="/quiz/customer/step1">Back</Link>
+                <Link href="/customer/step1">Back</Link>
               </Button>
               <Button asChild>
-                <Link href="/quiz/customer/step3">Next</Link>
+                <Link href="/customer/step3">Next</Link>
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
