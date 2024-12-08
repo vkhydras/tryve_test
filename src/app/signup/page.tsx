@@ -51,11 +51,9 @@ export default function SignUp() {
 
       if (response.ok) {
         toast.success("Sign-up successful! Redirecting...");
-
-        // Using setTimeout to give the toast time to display before redirect
         setTimeout(() => {
           router.push("/login");
-        }, 1000); // Redirect after 2 seconds (or adjust as needed)
+        }, 1000);
       } else {
         toast.error("Sign-up failed. Please try again.");
       }
@@ -67,70 +65,96 @@ export default function SignUp() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Sign Up</CardTitle>
-            <CardDescription>Create an account to get started</CardDescription>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="max-w-lg w-full bg-white shadow-lg rounded-lg">
+          <CardHeader className="border-b p-6">
+            <CardTitle className="text-xl font-semibold text-teal-700">
+              Sign Up
+            </CardTitle>
+            <CardDescription className="text-sm text-gray-500">
+              Create your account to start your journey with TryveTest
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="space-y-2">
-                <Label htmlFor="full-name">Full Name</Label>
+          <CardContent className="p-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <Label htmlFor="full-name" className="text-gray-700">
+                  Full Name
+                </Label>
                 <Input
                   id="full-name"
                   type="text"
                   placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  className="mt-2"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+              <div>
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2"
                   required
                 />
-                {errors.email && <p className="text-red-500">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                )}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div>
+                <Label htmlFor="password" className="text-gray-700">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="mt-2"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+              <div>
+                <Label htmlFor="confirm-password" className="text-gray-700">
+                  Confirm Password
+                </Label>
                 <Input
                   id="confirm-password"
                   type="password"
                   placeholder="Confirm your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="mt-2"
                   required
                 />
                 {errors.confirmPassword && (
-                  <p className="text-red-500">{errors.confirmPassword}</p>
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
-              <Button type="submit" className="w-full">
-                Sign Up
+              <Button
+                type="submit"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg"
+              >
+                Create Account
               </Button>
             </form>
-            <div className="mt-4 text-center">
-              <p>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link href="/login" className="text-blue-500 hover:underline">
+                <Link
+                  href="/login"
+                  className="text-teal-600 font-medium hover:underline"
+                >
                   Log in
                 </Link>
               </p>

@@ -147,27 +147,37 @@ export default function CustomerQuizStep3() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto">
+    <div className="container mx-auto px-6 py-12 bg-teal-50 ">
+      <Card className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg border border-gray-200">
         <CardHeader>
-          <CardTitle>Find Your Therapist - Step 3</CardTitle>
-          <CardDescription>Language, culture, and religion</CardDescription>
+          <CardTitle className="text-2xl font-semibold text-teal-700">
+            Step 3
+          </CardTitle>
+          <CardDescription className="text-teal-500">
+            Language, culture, and religion
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="language" className="text-sm font-medium">
+          <form className="space-y-6">
+            <div className="space-y-4">
+              <label
+                htmlFor="language"
+                className="text-sm font-medium text-teal-600"
+              >
                 Preferred Languages
               </label>
               <div className="relative">
                 <Input
                   id="language"
                   value={languageInput}
-                  onChange={(e) => setLanguageInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setLanguageInput(e.target.value)
+                  }
                   placeholder="Search and select languages"
+                  className="border-teal-500 focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
                 />
                 {languageInput && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     {languages
                       .filter((lang) =>
                         lang.toLowerCase().includes(languageInput.toLowerCase())
@@ -175,7 +185,7 @@ export default function CustomerQuizStep3() {
                       .map((lang) => (
                         <div
                           key={lang}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
                           onClick={() => handleAddLanguage(lang)}
                         >
                           {lang}
@@ -186,33 +196,44 @@ export default function CustomerQuizStep3() {
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedLanguages.map((lang) => (
-                  <Badge key={lang} variant="secondary">
+                  <Badge
+                    key={lang}
+                    variant="outline"
+                    className="bg-teal-100 text-teal-800"
+                  >
                     {lang}
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-1 h-auto p-0"
+                      className="ml-2 h-auto p-0 text-teal-600 hover:text-teal-800"
                       onClick={() => handleRemoveLanguage(lang)}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-4 w-4" />
                     </Button>
                   </Badge>
                 ))}
               </div>
             </div>
-            <div className="space-y-2">
-              <label htmlFor="culture" className="text-sm font-medium">
+
+            <div className="space-y-4">
+              <label
+                htmlFor="culture"
+                className="text-sm font-medium text-teal-600"
+              >
                 Cultural Background
               </label>
               <div className="relative">
                 <Input
                   id="culture"
                   value={cultureInput}
-                  onChange={(e) => setCultureInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCultureInput(e.target.value)
+                  }
                   placeholder="Search and select cultural backgrounds"
+                  className="border-teal-500 focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
                 />
                 {cultureInput && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     {cultures
                       .filter((culture) =>
                         culture
@@ -222,14 +243,14 @@ export default function CustomerQuizStep3() {
                       .map((culture) => (
                         <div
                           key={culture}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
                           onClick={() => handleAddCulture(culture)}
                         >
                           {culture}
                         </div>
                       ))}
                     <div
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
                       onClick={() => handleAddCulture(cultureInput)}
                     >
                       Add "{cultureInput}"
@@ -239,33 +260,44 @@ export default function CustomerQuizStep3() {
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {culturalBackground.map((culture) => (
-                  <Badge key={culture} variant="secondary">
+                  <Badge
+                    key={culture}
+                    variant="outline"
+                    className="bg-teal-100 text-teal-800"
+                  >
                     {culture}
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-1 h-auto p-0"
+                      className="ml-2 h-auto p-0 text-teal-600 hover:text-teal-800"
                       onClick={() => handleRemoveCulture(culture)}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-4 w-4" />
                     </Button>
                   </Badge>
                 ))}
               </div>
             </div>
-            <div className="space-y-2">
-              <label htmlFor="religion" className="text-sm font-medium">
+
+            <div className="space-y-4">
+              <label
+                htmlFor="religion"
+                className="text-sm font-medium text-teal-600"
+              >
                 Religion (Optional)
               </label>
               <div className="relative">
                 <Input
                   id="religion"
                   value={religionInput}
-                  onChange={(e) => setReligionInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setReligionInput(e.target.value)
+                  }
                   placeholder="Search and select religions"
+                  className="border-teal-500 focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
                 />
                 {religionInput && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     {religions
                       .filter((religion) =>
                         religion
@@ -275,14 +307,14 @@ export default function CustomerQuizStep3() {
                       .map((religion) => (
                         <div
                           key={religion}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
                           onClick={() => handleAddReligion(religion)}
                         >
                           {religion}
                         </div>
                       ))}
                     <div
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
                       onClick={() => handleAddReligion(religionInput)}
                     >
                       Add "{religionInput}"
@@ -292,25 +324,37 @@ export default function CustomerQuizStep3() {
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedReligions.map((religion) => (
-                  <Badge key={religion} variant="secondary">
+                  <Badge
+                    key={religion}
+                    variant="outline"
+                    className="bg-teal-100 text-teal-800"
+                  >
                     {religion}
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-1 h-auto p-0"
+                      className="ml-2 h-auto p-0 text-teal-600 hover:text-teal-800"
                       onClick={() => handleRemoveReligion(religion)}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-4 w-4" />
                     </Button>
                   </Badge>
                 ))}
               </div>
             </div>
-            <div className="flex justify-between">
-              <Button variant="outline" asChild>
+
+            <div className="flex justify-between items-center mt-6">
+              <Button
+                variant="outline"
+                className="text-teal-600 border-teal-500 hover:bg-teal-50"
+                asChild
+              >
                 <Link href="step2">Back</Link>
               </Button>
-              <Button asChild>
+              <Button
+                className="bg-teal-600 text-white hover:bg-teal-700"
+                asChild
+              >
                 <Link href="step4">Next</Link>
               </Button>
             </div>

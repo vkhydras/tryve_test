@@ -36,7 +36,7 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successful! Redirecting...");
 
-        // Check the role and redirect based on the user's role
+        // Redirecting based on user role
         if (data.role === "CUSTOMER") {
           router.push("/customer/step1");
         } else if (data.role === "PRACTITIONER") {
@@ -88,14 +88,14 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-teal-500 text-white">
                 Log In
               </Button>
             </form>
             <div className="mt-4 text-center">
               <p>
                 Don't have an account?{" "}
-                <Link href="/signup" className="text-blue-500 hover:underline">
+                <Link href="/signup" className="text-teal-600 hover:underline">
                   Sign up
                 </Link>
               </p>
