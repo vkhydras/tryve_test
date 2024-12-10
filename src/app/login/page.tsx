@@ -34,18 +34,18 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
+        // Save token and user info to localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
         toast.success("Login successful! Redirecting...");
 
         // Redirecting based on user role
-        if (data.role === "CUSTOMER") {
-          router.push("/customer/step1");
-        } else if (data.role === "PRACTITIONER") {
-          router.push("/practitioner/step1");
-        } else {
-          toast.error("Role not recognized. Please contact support.");
+        if (data.user.role === "CUSTOMER") {
+          router.push("/book");
         }
       } else {
-        toast.error(data.message || "Login failed. Please try again.");
+        toast.error(data.error || "Login failed. Please try again.");
       }
     } catch (err) {
       console.error(err);

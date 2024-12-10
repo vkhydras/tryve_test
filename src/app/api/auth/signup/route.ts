@@ -3,16 +3,30 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
 export async function POST(req: Request) {
-  const { email, password, fullName, role = "CUSTOMER" } = await req.json();
-
-  if (!email || !password || !fullName) {
-    return NextResponse.json(
-      { error: "All fields are required" },
-      { status: 400 }
-    );
-  }
-
   try {
+    const data = await req.json();
+    const {
+      email,
+      password,
+      name: fullName,
+      dob,
+      timezone,
+      mentalHealth,
+      physicalHealth,
+      reasons,
+      preferences,
+      concerns,
+    } = data;
+
+    console.log("data:", data);
+
+    if (!email || !password || !fullName) {
+      return NextResponse.json(
+        { error: "Email, password, and name are required" },
+        { status: 400 }
+      );
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -26,38 +40,59 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the user in the User table
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        fullName,
-        role,
-      },
+    const result = await prisma.$transaction(async (prisma) => {
+      // Create user
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          fullName,
+          role: "CUSTOMER",
+        },
+      });
+
+      // Create customer
+      const customer = await prisma.customer.create({
+        data: {
+          userId: user.id,
+          dob: dob ? new Date(dob) : null,
+          timezone: timezone || null,
+          mentalHealth: mentalHealth || null,
+          physicalHealth: physicalHealth || null,
+
+          // Create related records for reasons, preferences, and concerns
+          reasons: {
+            create: reasons?.map((reason: string) => ({ reason })) || [],
+          },
+          preferences: {
+            create:
+              preferences?.map((preference: string) => ({ preference })) || [],
+          },
+          concerns: {
+            create: concerns?.map((concern: string) => ({ concern })) || [],
+          },
+        },
+      });
+
+      return { user, customer };
     });
 
-    // Based on the role, create an entry in either the Customer or Practitioner table
-    if (role === "CUSTOMER") {
-      await prisma.customer.create({
-        data: {
-          userId: user.id,
-        },
-      });
-    } else if (role === "PRACTITIONER") {
-      await prisma.practitioner.create({
-        data: {
-          userId: user.id,
-          type: "General", // Default type, you may modify this depending on your requirements
-          bio: "", // You can add the bio here or keep it empty as default
-        },
-      });
+    return NextResponse.json(
+      { message: "User created successfully" },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("Signup error:", error);
+
+    if (error.code === "P2002") {
+      return NextResponse.json(
+        { error: "Email already exists" },
+        { status: 409 }
+      );
     }
 
-    return NextResponse.json({ user }, { status: 201 });
-  } catch (error:any) {
-    console.error(error);
     return NextResponse.json(
-      { error: error.message || "An error occurred" },
+      { error: "An error occurred during signup", details: error.message },
       { status: 500 }
     );
   }

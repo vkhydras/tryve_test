@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +16,8 @@ interface Practitioner {
   specialties: string[];
   yearsOfExperience: number;
   sessionRate: number;
+  clinic: string;
+  country: string;
   availability: {
     [date: string]: { start: string; end: string; price: number }[];
   };
@@ -29,6 +32,8 @@ const practitioners: Practitioner[] = [
     specialties: ["Anxiety", "Depression", "Stress Management"],
     yearsOfExperience: 15,
     sessionRate: 150,
+    clinic: "Mindful Wellness Center",
+    country: "United States",
     availability: {
       "2023-07-15": [
         { start: "09:00", end: "10:00", price: 100 },
@@ -50,6 +55,8 @@ const practitioners: Practitioner[] = [
     specialties: ["CBT", "Trauma", "Relationship Issues"],
     yearsOfExperience: 10,
     sessionRate: 130,
+    clinic: "Harmony Therapy Institute",
+    country: "Canada",
     availability: {
       "2023-07-15": [
         { start: "10:00", end: "11:00", price: 100 },
@@ -66,6 +73,16 @@ const practitioners: Practitioner[] = [
 ];
 
 export default function MatchedTherapistsPage() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
+
+    if (token && storedUser && !hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+    }
+  }, []);
   const [selectedPractitioner, setSelectedPractitioner] =
     useState<Practitioner | null>(null);
 
@@ -88,7 +105,11 @@ export default function MatchedTherapistsPage() {
                 </CardTitle>
                 <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-2">
                   {practitioner.specialties.map((specialty) => (
-                    <Badge key={specialty} variant="secondary">
+                    <Badge
+                      key={specialty}
+                      variant="secondary"
+                      className="bg-teal-100 text-teal-800"
+                    >
                       {specialty}
                     </Badge>
                   ))}
@@ -99,18 +120,31 @@ export default function MatchedTherapistsPage() {
                 <p className="text-sm text-gray-600">
                   ${practitioner.sessionRate} per session
                 </p>
+                <p className="text-sm text-gray-600">
+                  {practitioner.clinic}, {practitioner.country}
+                </p>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-6 leading-relaxed">
+              <p className="text-gray-700 mb-6 leading-relaxed line-clamp-3">
                 {practitioner.bio}
               </p>
-              <Button
-                onClick={() => setSelectedPractitioner(practitioner)}
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 text-lg"
-              >
-                Book Session
-              </Button>
+              <div className="flex justify-between items-center">
+                <Button
+                  onClick={() => setSelectedPractitioner(practitioner)}
+                  className="bg-teal-600 hover:bg-teal-700 text-white py-2 text-lg"
+                >
+                  Book Session
+                </Button>
+                <Link href={`/practitioner/${practitioner.id}`} passHref>
+                  <Button
+                    variant="outline"
+                    className="text-teal-600 border-teal-600 hover:bg-teal-50"
+                  >
+                    Read More
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         ))}
