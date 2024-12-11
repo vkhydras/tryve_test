@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import Step1 from "@/components/quiz/step1";
 import Step2 from "@/components/quiz/step2";
 import Step3 from "@/components/quiz/step3";
@@ -39,8 +40,14 @@ interface Responses {
   previousExperience: string;
   name: string;
   email: string;
-}
+  reasons: string[];
 
+  dob?: Date;
+  timezone?: string;
+  mentalHealth?: string;
+  physicalHealth?: string;
+  concerns?: string[];
+}
 export default function Questionnaire() {
   const [currentStep, setCurrentStep] = useState(0);
   const [responses, setResponses] = useState<Responses>({
@@ -53,6 +60,7 @@ export default function Questionnaire() {
     previousExperience: "",
     name: "",
     email: "",
+    reasons: [],
   });
 
   useEffect(() => {
@@ -139,39 +147,61 @@ export default function Questionnaire() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-[#FFF5E6] h-screen">
-      <Card className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-[#2C1D14]">
-            {steps[currentStep]}
-          </CardTitle>
-          <CardDescription className="text-[#B78160]">
+    <div className="min-h-screen bg-[#FFF5E6] px-4 py-6 sm:py-8 md:py-12 mt-20">
+      <div className="max-w-2xl mx-auto">
+        {/* Progress bar for larger screens */}
+        <div className="hidden sm:block mb-8">
+          <Progress
+            value={(currentStep / (steps.length - 1)) * 100}
+            className="h-2 bg-[#EBBBA5]"
+          />
+          <div className="mt-10 text-sm text-[#B78160] text-right">
             Step {currentStep + 1} of {steps.length}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {renderStep()}
-          <div className="flex justify-between mt-6">
-            <Button
-              type="button"
-              variant="outline"
-              className="text-[#B78160] border-[#B78160] hover:bg-[#EBBBA5]"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-            >
-              Back
-            </Button>
-            <Button
-              type="button"
-              className="bg-[#B78160] text-white hover:bg-[#BE8B69]"
-              onClick={handleNext}
-              disabled={currentStep === steps.length - 1}
-            >
-              {currentStep === steps.length - 2 ? "Finish" : "Next"}
-            </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        <Card className="bg-white shadow-lg border-[#DCAB90]">
+          <CardHeader className="space-y-2 md:space-y-3">
+            <CardTitle className="text-xl sm:text-2xl font-semibold text-[#2C1D14] text-center sm:text-left">
+              {steps[currentStep]}
+            </CardTitle>
+            {/* Progress indicator for mobile */}
+            <CardDescription className="text-[#B78160] sm:hidden">
+              Step {currentStep + 1} of {steps.length}
+            </CardDescription>
+            <Progress
+              value={(currentStep / (steps.length - 1)) * 100}
+              className="h-2 bg-[#EBBBA5] sm:hidden mt-2"
+            />
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
+            <div className="min-h-[300px] flex flex-col">
+              <div className="flex-grow">{renderStep()}</div>
+
+              <div className="flex justify-between mt-6 pt-4 border-t border-[#EBBBA5]">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-[#B78160] border-[#B78160] hover:bg-[#EBBBA5] min-w-[100px]"
+                  onClick={handleBack}
+                  disabled={currentStep === 0}
+                >
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[#B78160] text-white hover:bg-[#BE8B69] min-w-[100px]"
+                  onClick={handleNext}
+                  disabled={currentStep === steps.length - 1}
+                >
+                  {currentStep === steps.length - 2 ? "Finish" : "Next"}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

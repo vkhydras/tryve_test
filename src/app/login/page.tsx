@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardHeader,
@@ -13,15 +12,18 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { Toaster, toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -39,80 +41,91 @@ export default function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        toast.success("Login successful! Redirecting...");
-
-        // Redirecting based on user role
+        // Redirect based on user role
         if (data.user.role === "CUSTOMER") {
-          router.push("/book");
+          window.location.href = "/book";
+        } else {
+          window.location.href = "/";
         }
       } else {
-        toast.error(data.error || "Login failed. Please try again.");
+        setError(data.error || "Login failed. Please try again.");
+        setIsLoading(false);
       }
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong. Please try again.");
+      setError("Something went wrong. Please try again.");
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <Toaster position="top-center" reverseOrder={false} />
-      <div className="container mx-auto px-4 py-8 bg-[#FFF5E6] h-screen">
-        <Card className="max-w-md mx-auto bg-white shadow-lg border-[#DCAB90]">
-          <CardHeader>
-            <CardTitle className="text-[#2C1D14]">Login</CardTitle>
-            <CardDescription className="text-[#B78160]">
-              Welcome back! Please log in to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-[#2C1D14]">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-[#2C1D14]">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-[#B78160] text-white hover:bg-[#BE8B69]"
-              >
-                Log In
-              </Button>
-            </form>
-            <div className="mt-4 text-center">
-              <p className="text-[#2C1D14]">
-                Don't have an account?{" "}
-                <Link href="/signup" className="text-[#B78160] hover:underline">
-                  Sign up
-                </Link>
-              </p>
+    <div className="container mx-auto px-4 py-8 bg-[#FFF5E6] min-h-screen flex items-center justify-center">
+      <Card className="w-full max-w-md bg-white shadow-lg border-[#DCAB90]">
+        <CardHeader>
+          <CardTitle className="text-[#2C1D14]">Login</CardTitle>
+          <CardDescription className="text-[#B78160]">
+            Welcome back! Please log in to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-[#2C1D14]">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-[#2C1D14]">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
+              />
+            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button
+              type="submit"
+              className="w-full bg-[#B78160] text-white hover:bg-[#BE8B69]"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </div>
+              ) : (
+                "Log In"
+              )}
+            </Button>
+          </form>
+          <div className="mt-4 text-center">
+            <p className="text-[#2C1D14]">
+              Don't have an account?{" "}
+              <Link
+                href="/questionaire"
+                className="text-[#B78160] hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

@@ -53,7 +53,7 @@ export default function ResourcesPage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-12 bg-[#FFF5E6]">
+    <div className="container mx-auto px-4 py-12 bg-[#FFF5E6] mt-20">
       <h1 className="text-4xl font-bold text-[#2C1D14] mb-8 text-center">
         Mental Health Resources
       </h1>

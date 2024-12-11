@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -110,7 +110,7 @@ export default function PractitionerPage() {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 bg-[#FFF5E6]">
+    <div className="container mx-auto py-12 px-4 bg-[#FFF5E6] mt-20">
       <Card className="bg-white shadow-lg max-w-4xl mx-auto border-[#DCAB90]">
         <CardHeader className="flex flex-col sm:flex-row items-center gap-6 pb-6">
           <Avatar className="w-32 h-32">

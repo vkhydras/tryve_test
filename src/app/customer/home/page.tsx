@@ -33,7 +33,7 @@ export default function CustomerHomePage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-12 bg-[#FFF5E6] h-screen">
+    <div className="container mx-auto px-4 py-12 bg-[#FFF5E6] h-full min-h-screen mt-20">
       <h1 className="text-3xl font-bold text-[#2C1D14] mb-8">Welcome Back!</h1>
 
       <div className="grid md:grid-cols-2 gap-8">

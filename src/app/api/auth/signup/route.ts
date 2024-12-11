@@ -11,13 +11,15 @@ export async function POST(req: Request) {
       name,
       reason,
       therapistVibe,
-      therapyApproach,
+      therapyStyle,
       budget,
       preferences,
       sessionType,
+      previousExperience,
     } = data;
 
-    // Validate required fields
+    console.log("Received data:", data);
+
     if (!email || !password || !name) {
       return NextResponse.json(
         { error: "Email, password, and name are required" },
@@ -25,7 +27,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -39,9 +40,7 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Use transaction to ensure all related data is created
-    await prisma.$transaction(async (prisma) => {
-      // Create user
+    const result = await prisma.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
           email,
@@ -51,79 +50,89 @@ export async function POST(req: Request) {
         },
       });
 
-      // Create customer with related data
       const customer = await prisma.customer.create({
         data: {
           userId: user.id,
-          // Create related preferences
-          preferences: {
-            create:
-              preferences?.map((preference: string) => ({
-                preference,
-              })) || [],
-          },
-          // Create reason record
-          reasons: {
-            create: [{ reason }],
-          },
-          // Store session format preference
-          bookings: {
-            create: [
-              {
-                sessionFormat: sessionType,
-                startTime: new Date(), // You might want to adjust this based on your needs
-                endTime: new Date(Date.now() + 3600000), // Example: 1 hour session
-              },
-            ],
-          },
-          // Store therapy approach preference
-          customerNeedSpecialties: {
-            create: [
-              {
-                specialty: {
-                  connectOrCreate: {
-                    where: { name: therapyApproach },
-                    create: {
-                      name: therapyApproach,
-                      description: `${therapistVibe} approach - Budget: ${budget}`,
-                    },
-                  },
+          reason,
+          therapistVibe,
+          therapyApproach: therapyStyle,
+          budget,
+          sessionType,
+          previousExperience,
+
+          ...(preferences && preferences.length > 0
+            ? {
+                preferences: {
+                  create: preferences.map((preference: string) => ({
+                    preference,
+                  })),
                 },
-              },
-            ],
-          },
-        },
-        include: {
-          preferences: true,
-          reasons: true,
-          bookings: true,
-          customerNeedSpecialties: {
-            include: {
-              specialty: true,
-            },
-          },
+              }
+            : {}),
+
+          ...(reason
+            ? {
+                reasons: {
+                  create: [{ reason }],
+                },
+              }
+            : {}),
+
+          ...(sessionType
+            ? {
+                bookings: {
+                  create: [
+                    {
+                      sessionFormat: sessionType,
+                      startTime: new Date(),
+                      endTime: new Date(Date.now() + 3600000),
+                      status: "PENDING",
+                    },
+                  ],
+                },
+              }
+            : {}),
+
+          ...(therapyStyle
+            ? {
+                customerNeedSpecialties: {
+                  create: [
+                    {
+                      specialty: {
+                        connectOrCreate: {
+                          where: { name: therapyStyle },
+                          create: {
+                            name: therapyStyle,
+                            description: `${
+                              therapistVibe || "Not specified"
+                            } approach - Budget: ${budget || "Not specified"}`,
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              }
+            : {}),
         },
       });
 
       return { user, customer };
     });
 
+    console.log("Created user and customer:", result);
+
     return NextResponse.json(
       { message: "User created successfully" },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Signup error:", error);
-
-    if (error.code === "P2002") {
-      return NextResponse.json(
-        { error: "Email already exists" },
-        { status: 409 }
-      );
-    }
+  } catch {
+    console.error("Signup error:");
 
     return NextResponse.json(
-      { error: "An error occurred during signup", details: error.message },
+      {
+        error: "An error occurred during signup",
+      },
       { status: 500 }
     );
   }
