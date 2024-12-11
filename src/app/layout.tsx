@@ -19,8 +19,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your App Name",
-  description: "Your app description",
+  title: "Tryve",
+  description: "Tryve test",
 };
 
 // Split the layout into client and server components
