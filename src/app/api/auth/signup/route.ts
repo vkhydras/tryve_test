@@ -8,25 +8,24 @@ export async function POST(req: Request) {
     const {
       email,
       password,
-      name: fullName,
-      dob,
-      timezone,
-      mentalHealth,
-      physicalHealth,
-      reasons,
+      name,
+      reason,
+      therapistVibe,
+      therapyApproach,
+      budget,
       preferences,
-      concerns,
+      sessionType,
     } = data;
 
-    console.log("data:", data);
-
-    if (!email || !password || !fullName) {
+    // Validate required fields
+    if (!email || !password || !name) {
       return NextResponse.json(
         { error: "Email, password, and name are required" },
         { status: 400 }
       );
     }
 
+    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -40,36 +39,68 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Use transaction to ensure all related data is created
     await prisma.$transaction(async (prisma) => {
       // Create user
       const user = await prisma.user.create({
         data: {
           email,
           password: hashedPassword,
-          fullName,
+          fullName: name,
           role: "CUSTOMER",
         },
       });
 
-      // Create customer
+      // Create customer with related data
       const customer = await prisma.customer.create({
         data: {
           userId: user.id,
-          dob: dob ? new Date(dob) : null,
-          timezone: timezone || null,
-          mentalHealth: mentalHealth || null,
-          physicalHealth: physicalHealth || null,
-
-          // Create related records for reasons, preferences, and concerns
-          reasons: {
-            create: reasons?.map((reason: string) => ({ reason })) || [],
-          },
+          // Create related preferences
           preferences: {
             create:
-              preferences?.map((preference: string) => ({ preference })) || [],
+              preferences?.map((preference: string) => ({
+                preference,
+              })) || [],
           },
-          concerns: {
-            create: concerns?.map((concern: string) => ({ concern })) || [],
+          // Create reason record
+          reasons: {
+            create: [{ reason }],
+          },
+          // Store session format preference
+          bookings: {
+            create: [
+              {
+                sessionFormat: sessionType,
+                startTime: new Date(), // You might want to adjust this based on your needs
+                endTime: new Date(Date.now() + 3600000), // Example: 1 hour session
+              },
+            ],
+          },
+          // Store therapy approach preference
+          customerNeedSpecialties: {
+            create: [
+              {
+                specialty: {
+                  connectOrCreate: {
+                    where: { name: therapyApproach },
+                    create: {
+                      name: therapyApproach,
+                      description: `${therapistVibe} approach - Budget: ${budget}`,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+        include: {
+          preferences: true,
+          reasons: true,
+          bookings: true,
+          customerNeedSpecialties: {
+            include: {
+              specialty: true,
+            },
           },
         },
       });

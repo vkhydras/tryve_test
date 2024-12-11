@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useRouter, usePathname } from "next/navigation";
 
 type SessionUser = {
   id?: number;
@@ -17,106 +17,89 @@ export function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<SessionUser | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Check for stored token and user info
-    const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-
-    if (token && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setIsAuthenticated(true);
-        setUser(parsedUser);
-      } catch (error) {
-        // Clear invalid storage
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
     }
   }, []);
 
   const handleLogout = () => {
-    // Clear local storage
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
-
-    // Reset authentication state
-    setIsAuthenticated(false);
     setUser(null);
-
-    // Redirect to login
+    setIsAuthenticated(false);
     router.push("/login");
   };
 
-  // Get initials for avatar fallback
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    const names = name.split(" ");
-    return names
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase();
+  const getInitials = (fullName: string | undefined) => {
+    if (!fullName) return "";
+    const names = fullName.split(" ");
+    const initials = names.map((name) => name.charAt(0).toUpperCase()).join("");
+    return initials;
+  };
+
+  const NavLink = ({
+    href,
+    children,
+  }: {
+    href: string;
+    children: React.ReactNode;
+  }) => {
+    const isActive = pathname === href;
+    return (
+      <Link
+        href={href}
+        className={`text-[#2C1D14] hover:text-[#B78160] transition-colors ${
+          isActive ? "font-semibold" : ""
+        }`}
+      >
+        {children}
+      </Link>
+    );
   };
 
   return (
-    <header className="bg-gradient-to-r from-teal-700 to-teal-500 text-white py-4 shadow-md">
+    <header className="bg-gradient-to-r from-[#BE8B69] via-[#DCAB90] to-[#EBBBA5] text-[#2C1D14] py-4 shadow-md">
       <div className="container mx-auto px-4">
-        <nav className="flex justify-between items-center">
+        <nav className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-2xl font-bold hover:text-teal-200 transition-colors"
+            className="text-2xl font-bold hover:text-[#B78160] transition-colors"
           >
-            TryveTest
+            Tryve
           </Link>
+
           {isAuthenticated ? (
-            <div className="flex items-center space-x-4">
-              {/* Navigation links based on user role */}
-              {user?.role === "CUSTOMER" && (
-                <>
-                  <Link
-                    href="/customer/dashboard"
-                    className="text-white hover:text-teal-200"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/appointments"
-                    className="text-white hover:text-teal-200"
-                  >
-                    Appointments
-                  </Link>
-                  <Link href="/book" className="text-white hover:text-teal-200">
-                    Book Appointment
-                  </Link>
-                </>
-              )}
-
-              <Link href="/settings" className="text-white hover:text-teal-200">
-                Profile Settings
-              </Link>
-
+            <div className="flex items-center space-x-8">
+              <NavLink href="/customer/home">Home</NavLink>
+              <NavLink href="/about">About</NavLink>
+              <NavLink href="/resources">Resources</NavLink>
+              <NavLink href="/book">Find Therapists</NavLink>
+              <NavLink href="/appointments">Appointments</NavLink>
               <div className="flex items-center space-x-2">
-                <Avatar>
+                <Avatar className="h-8 w-8">
                   <AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium">{user?.fullName}</span>
               </div>
               <Button
-                variant="outline"
-                className="bg-white text-teal-600 hover:bg-teal-100"
+                variant="ghost"
                 onClick={handleLogout}
+                className="hover:bg-[#B78160] bg-[#FFF5E6] text-[#2C1D14] hover:text-[#FFF5E6]"
               >
-                Log out
+                Logout
               </Button>
             </div>
           ) : (
-            <div className="space-x-4">
+            <div className="space-x-8">
+              <NavLink href="/about">About</NavLink>
+              <NavLink href="/resources">Resources</NavLink>
               <Button
                 asChild
                 variant="ghost"
-                className="hover:bg-teal-50 bg-white text-teal-600"
+                className="hover:bg-[#B78160] bg-[#FFF5E6] text-[#2C1D14] hover:text-[#FFF5E6] ml-4"
               >
                 <Link href="/login">Login</Link>
               </Button>

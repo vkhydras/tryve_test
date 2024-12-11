@@ -58,6 +58,7 @@ export default function SignUp() {
         toast.error("Sign-up failed. Please try again.");
       }
     } catch (error) {
+      console.log(error);
       toast.error("An error occurred. Please try again.");
     }
   };

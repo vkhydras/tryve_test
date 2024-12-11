@@ -6,17 +6,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 
 interface SignupProps {
-  responses: {
-    name: string;
-    email: string;
-    reasons: string[];
-    dob?: Date;
-    timezone?: string;
-    mentalHealth?: string;
-    physicalHealth?: string;
-    preferences?: string[];
-    concerns?: string[];
-  };
+  responses: any
   onResponseChange: (response: { [key: string]: string }) => void;
 }
 
@@ -56,8 +46,6 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        // Convert date to ISO string if it exists
-        dob: responses.dob ? responses.dob.toISOString() : undefined,
       };
 
       const response = await fetch("/api/auth/signup", {
@@ -79,18 +67,42 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
       // Show success toast
       toast.success("Account created successfully!");
 
+      // Show closing message
+      toast.success(
+        "Great job! Based on your answers, we'll match you with therapists who meet your needs. Your path to feeling better starts here.",
+        {
+          duration: 5000,
+          style: {
+            background: "#FFF5E6",
+            color: "#2C1D14",
+            border: "1px solid #B78160",
+          },
+        }
+      );
+
       // Redirect to login page after a short delay
       setTimeout(() => {
         toast("Redirecting to login...", {
           icon: "👋",
+          style: {
+            background: "#FFF5E6",
+            color: "#2C1D14",
+            border: "1px solid #B78160",
+          },
         });
         router.push("/login");
-      }, 2000);
+      }, 6000);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An error occurred during signup"
       );
-      toast.error("Signup failed. Please try again.");
+      toast.error("Signup failed. Please try again.", {
+        style: {
+          background: "#FFF5E6",
+          color: "#B78160",
+          border: "1px solid #B78160",
+        },
+      });
     }
   };
 
@@ -99,7 +111,7 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
       <Toaster position="top-center" reverseOrder={false} />
       <form onSubmit={handleSignup} className="space-y-4">
         <div>
-          <Label htmlFor="name" className="text-sm font-medium text-teal-700">
+          <Label htmlFor="name" className="text-sm font-medium text-[#2C1D14]">
             Full Name
           </Label>
           <Input
@@ -109,12 +121,12 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
             value={formData.name}
             onChange={handleInputChange}
             placeholder="Enter your full name"
-            className="border-teal-300 focus:ring-teal-500"
+            className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
             required
           />
         </div>
         <div>
-          <Label htmlFor="email" className="text-sm font-medium text-teal-700">
+          <Label htmlFor="email" className="text-sm font-medium text-[#2C1D14]">
             Email Address
           </Label>
           <Input
@@ -124,14 +136,14 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Enter your email address"
-            className="border-teal-300 focus:ring-teal-500"
+            className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
             required
           />
         </div>
         <div>
           <Label
             htmlFor="password"
-            className="text-sm font-medium text-teal-700"
+            className="text-sm font-medium text-[#2C1D14]"
           >
             Password
           </Label>
@@ -142,14 +154,14 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
             value={formData.password}
             onChange={handleInputChange}
             placeholder="Create a password"
-            className="border-teal-300 focus:ring-teal-500"
+            className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
             required
           />
         </div>
         <div>
           <Label
             htmlFor="confirmPassword"
-            className="text-sm font-medium text-teal-700"
+            className="text-sm font-medium text-[#2C1D14]"
           >
             Confirm Password
           </Label>
@@ -160,14 +172,14 @@ export default function Signup({ responses, onResponseChange }: SignupProps) {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             placeholder="Confirm your password"
-            className="border-teal-300 focus:ring-teal-500"
+            className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
             required
           />
         </div>
         {error && <div className="text-red-500 text-sm">{error}</div>}
         <Button
           type="submit"
-          className="w-full bg-teal-600 text-white hover:bg-teal-700"
+          className="w-full bg-[#B78160] text-white hover:bg-[#BE8B69]"
         >
           Create Account
         </Button>

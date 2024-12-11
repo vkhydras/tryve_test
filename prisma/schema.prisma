@@ -19,7 +19,7 @@ model User {
   religion          String?
   heardAboutUs      String?
   createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt()
+  updatedAt         DateTime @updatedAt
 
   // Relationships
   customer      Customer?
@@ -36,7 +36,15 @@ model Customer {
   mentalHealth   String?
   physicalHealth String?
 
-  // Relationships for the arrays we previously had
+  // New fields from signup form
+  reason             String?
+  therapistVibe      String?
+  therapyApproach    String?
+  budget             String?
+  sessionType        String?
+  previousExperience String?
+
+  // Relationships for arrays and other connections
   reasons                 CustomerReason[]
   preferences             CustomerPreference[]
   concerns                CustomerConcern[]
@@ -44,7 +52,6 @@ model Customer {
   customerNeedSpecialties CustomerNeedSpecialty[]
 }
 
-// New models to replace the String[] fields
 model CustomerReason {
   id         Int      @id @default(autoincrement())
   customerId Int
@@ -115,5 +122,6 @@ model Booking {
   sessionFormat String
   startTime     DateTime
   endTime       DateTime
+  status        String   @default("PENDING")
   customer      Customer @relation(fields: [customerId], references: [id])
 }

@@ -3,57 +3,36 @@ import { Label } from "@/components/ui/label";
 
 interface Step3Props {
   responses: {
-    mentalHealth: string;
-    physicalHealth: string;
+    therapyStyle: string;
   };
-  onResponseChange: (response: { mentalHealth?: string; physicalHealth?: string }) => void;
+  onResponseChange: (response: { therapyStyle: string }) => void;
 }
 
 export default function Step3({ responses, onResponseChange }: Step3Props) {
+  const styles = [
+    "Just listen and help me process my feelings.",
+    "Assign me homework and give me tools I can use every day.",
+    "A mix of both, depending on what I need.",
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <label className="text-sm font-medium text-teal-700">
-          How would you rate your current mental health?
-        </label>
-        <RadioGroup
-          value={responses.mentalHealth || ""}
-          onValueChange={(value) => onResponseChange({ mentalHealth: value })}
-        >
-          {["Poor", "Fair", "Good", "Very Good", "Excellent"].map(
-            (option, index) => (
-              <div key={option} className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value={String(index + 1)}
-                  id={`mental-${index + 1}`}
-                />
-                <Label htmlFor={`mental-${index + 1}`}>{option}</Label>
-              </div>
-            )
-          )}
-        </RadioGroup>
-      </div>
-      <div className="space-y-4">
-        <label className="text-sm font-medium text-teal-700">
-          How would you rate your current physical health?
-        </label>
-        <RadioGroup
-          value={responses.physicalHealth || ""}
-          onValueChange={(value) => onResponseChange({ physicalHealth: value })}
-        >
-          {["Poor", "Fair", "Good", "Very Good", "Excellent"].map(
-            (option, index) => (
-              <div key={option} className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value={String(index + 1)}
-                  id={`physical-${index + 1}`}
-                />
-                <Label htmlFor={`physical-${index + 1}`}>{option}</Label>
-              </div>
-            )
-          )}
-        </RadioGroup>
-      </div>
+    <div className="space-y-4">
+      <label className="text-lg font-medium text-[#2C1D14]">
+        How would you like to work on things?
+      </label>
+      <RadioGroup
+        value={responses.therapyStyle}
+        onValueChange={(value) => onResponseChange({ therapyStyle: value })}
+      >
+        {styles.map((style, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <RadioGroupItem value={style} id={`style-${index}`} />
+            <Label htmlFor={`style-${index}`} className="text-[#2C1D14]">
+              {style}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
     </div>
   );
 }

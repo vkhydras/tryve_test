@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { CalendarIcon, X } from 'lucide-react';
+import { X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
@@ -12,12 +12,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { loadStripe } from "@stripe/stripe-js";
-
-// Initialize Stripe
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+import { useRouter } from "next/navigation";
 
 interface Practitioner {
   id: string;
@@ -38,7 +33,9 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  const [sessionFormat, setSessionFormat] = useState<SessionFormat>("in-person");
+  const router = useRouter();
+  const [sessionFormat, setSessionFormat] =
+    useState<SessionFormat>("in-person");
 
   // Add demo sessions for December 1st and 20th
   const demoAvailability = {
@@ -61,66 +58,38 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
   // Helper function to check if a date has available sessions
   const hasAvailableSessions = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
-    return Boolean((combinedAvailability as Record<string, { start: string; end: string; price: number }[]>)[dateStr]?.length);
+    return Boolean(
+      (
+        combinedAvailability as Record<
+          string,
+          { start: string; end: string; price: number }[]
+        >
+      )[dateStr]?.length
+    );
   };
 
   const availableSessions = selectedDate
-    ? (combinedAvailability as Record<string, { start: string; end: string; price: number }[]>)[format(selectedDate, "yyyy-MM-dd")]
+    ? (
+        combinedAvailability as Record<
+          string,
+          { start: string; end: string; price: number }[]
+        >
+      )[format(selectedDate, "yyyy-MM-dd")]
     : undefined;
 
-  const handleBooking = async (session: { start: string; end: string; price: number }) => {
-    if (!selectedDate) {
-      alert("Please select a date.");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          practitionerId: practitioner.id,
-          date: format(selectedDate, "yyyy-MM-dd"),
-          time: `${session.start} - ${session.end}`,
-          sessionFormat,
-          price: session.price,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Checkout session creation failed");
-      }
-
-      const sessionResponse = await response.json();
-      const stripe = await stripePromise;
-      
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize");
-      }
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: sessionResponse.id,
-      });
-
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "An error occurred");
-    }
+  const handleBooking = async () => {
+    return router.push("/book/success");
   };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl p-0 w-full max-w-[95vw] max-h-[95vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-4xl p-0 w-full max-w-[95vw] max-h-[95vh] overflow-y-auto bg-[#FFF5E6]">
         <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4 text-[#2C1D14]" />
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6">
-          <DialogTitle className="text-xl sm:text-2xl font-semibold text-teal-700">
+          <DialogTitle className="text-xl sm:text-2xl font-semibold text-[#2C1D14]">
             Book a Session with {practitioner.name}
           </DialogTitle>
         </DialogHeader>
@@ -130,26 +99,28 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}
-              className="rounded-md border border-teal-200 w-full"
+              className="rounded-md border border-[#DCAB90] w-full"
               disabled={(date) => !hasAvailableSessions(date)}
               modifiers={{
                 available: (date) => hasAvailableSessions(date),
               }}
               modifiersStyles={{
-                available: { fontWeight: "bold" },
+                available: { fontWeight: "bold", color: "#B78160" },
               }}
             />
           </div>
           <div className="w-full">
             <div className="space-y-4">
               <div>
-                <h3 className="mb-2 font-medium text-teal-700">
+                <h3 className="mb-2 font-medium text-[#2C1D14]">
                   Session Format
                 </h3>
                 <select
                   value={sessionFormat}
-                  onChange={(e) => setSessionFormat(e.target.value as SessionFormat)}
-                  className="w-full p-2 border rounded-md border-teal-600 text-teal-700"
+                  onChange={(e) =>
+                    setSessionFormat(e.target.value as SessionFormat)
+                  }
+                  className="w-full p-2 border rounded-md border-[#DCAB90] text-[#2C1D14] bg-white"
                 >
                   <option value="in-person">In-person therapy</option>
                   <option value="online">Online therapy</option>
@@ -160,20 +131,20 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
             </div>
             {availableSessions ? (
               <div className="mt-4">
-                <h3 className="mb-2 font-medium text-teal-700">
+                <h3 className="mb-2 font-medium text-[#2C1D14]">
                   Available Sessions
                 </h3>
                 <div className="grid gap-2">
                   {availableSessions.map((session) => (
                     <div
                       key={`${session.start}-${session.end}`}
-                      className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 border rounded-md border-teal-600 text-teal-700 space-y-2 sm:space-y-0"
+                      className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 border rounded-md border-[#DCAB90] text-[#2C1D14] space-y-2 sm:space-y-0 bg-white"
                     >
                       <span className="text-sm">{`${session.start} - ${session.end}`}</span>
                       <span className="text-sm">${session.price}</span>
                       <Button
-                        onClick={() => handleBooking(session)}
-                        className="bg-teal-600 hover:bg-teal-700 text-white w-full sm:w-auto"
+                        onClick={() => handleBooking()}
+                        className="bg-[#B78160] hover:bg-[#BE8B69] text-white w-full sm:w-auto"
                       >
                         Book
                       </Button>
@@ -182,8 +153,10 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
                 </div>
               </div>
             ) : (
-              <p className="text-teal-700 mt-4 text-sm">
-                {selectedDate ? "No sessions available for selected date." : "Please select a date."}
+              <p className="text-[#2C1D14] mt-4 text-sm">
+                {selectedDate
+                  ? "No sessions available for selected date."
+                  : "Please select a date."}
               </p>
             )}
           </div>
@@ -192,4 +165,3 @@ export function BookingDialog({ practitioner, onClose }: BookingDialogProps) {
     </Dialog>
   );
 }
-

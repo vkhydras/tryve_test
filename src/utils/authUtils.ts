@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
 export function verifyToken(req: NextRequest) {
-  const token = req.headers.get('authorization')?.split(' ')[1];
+  const token = req.headers.get("authorization")?.split(" ")[1];
 
   if (!token) {
     return null;
@@ -10,24 +10,23 @@ export function verifyToken(req: NextRequest) {
 
   try {
     const decoded = jwt.verify(
-      token, 
+      token,
       process.env.JWT_SECRET || "default_secret"
     );
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-export function protectedRoute(handler: (req: NextRequest, context: any) => Promise<NextResponse>) {
-  return async (req: NextRequest, context: any) => {
+export function protectedRoute(
+  handler: (req: NextRequest, context: unknown) => Promise<NextResponse>
+) {
+  return async (req: NextRequest, context: unknown) => {
     const user = verifyToken(req);
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized" }, 
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     return handler(req, context);

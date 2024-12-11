@@ -11,5 +11,5 @@ export type SessionUser = {
     user: SessionUser | null;
     login: (token: string, userData: SessionUser) => void;
     logout: () => void;
-    checkAuth: () => any;
+    checkAuth: () => void;
   };

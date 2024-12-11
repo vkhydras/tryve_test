@@ -84,26 +84,26 @@ function Calendar({
   };
 
   return (
-    <div className="p-3 bg-teal-50">
+    <div className="p-3 bg-[#FFF5E6]">
       <div className="flex justify-between items-center mb-2 gap-2">
         <div className="flex items-center gap-2">
           <button
             onClick={decrementMonth}
-            className="p-1 hover:bg-teal-100 rounded"
+            className="p-1 hover:bg-[#EBBBA5] rounded"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 text-[#2C1D14]" />
           </button>
 
           <Select
             value={format(month, "MMMM")}
             onValueChange={handleMonthChange}
           >
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger className="w-[120px] border-[#DCAB90] text-[#2C1D14]">
               <SelectValue placeholder="Month" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-[#FFF5E6] border-[#DCAB90]">
               {months.map((m) => (
-                <SelectItem key={m} value={m}>
+                <SelectItem key={m} value={m} className="text-[#2C1D14]">
                   {m}
                 </SelectItem>
               ))}
@@ -112,9 +112,9 @@ function Calendar({
 
           <button
             onClick={incrementMonth}
-            className="p-1 hover:bg-teal-100 rounded"
+            className="p-1 hover:bg-[#EBBBA5] rounded"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 text-[#2C1D14]" />
           </button>
         </div>
 
@@ -125,24 +125,28 @@ function Calendar({
             open={isYearOpen}
             onOpenChange={setIsYearOpen}
           >
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="w-[100px] border-[#DCAB90] text-[#2C1D14]">
               <SelectValue placeholder="Year" />
             </SelectTrigger>
-            <SelectContent>
-              <div className="sticky top-0 p-2 bg-white border-b">
-                <div className="flex items-center gap-2 px-2 py-1 bg-teal-50 rounded">
-                  <Search className="h-4 w-4 text-teal-500" />
+            <SelectContent className="bg-[#FFF5E6] border-[#DCAB90]">
+              <div className="sticky top-0 p-2 bg-[#FFF5E6] border-b border-[#DCAB90]">
+                <div className="flex items-center gap-2 px-2 py-1 bg-[#EBBBA5] rounded">
+                  <Search className="h-4 w-4 text-[#2C1D14]" />
                   <Input
                     value={yearSearch}
                     onChange={(e) => setYearSearch(e.target.value)}
-                    className="border-none bg-transparent h-6 p-0 text-sm focus-visible:ring-0"
+                    className="border-none bg-transparent h-6 p-0 text-sm focus-visible:ring-0 text-[#2C1D14]"
                     placeholder="Search year..."
                   />
                 </div>
               </div>
-              <div className="max-h-[200px] overflow-y-auto bg-teal-50">
+              <div className="max-h-[200px] overflow-y-auto bg-[#FFF5E6]">
                 {filteredYears.map((y) => (
-                  <SelectItem key={y} value={y.toString()}>
+                  <SelectItem
+                    key={y}
+                    value={y.toString()}
+                    className="text-[#2C1D14]"
+                  >
                     {y}
                   </SelectItem>
                 ))}
@@ -163,15 +167,17 @@ function Calendar({
           nav: "hidden",
           table: "w-full border-collapse space-y-1",
           head_row: "flex",
-          head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+          head_cell: "text-[#B78160] rounded-md w-9 font-normal text-[0.8rem]",
           row: "flex w-full mt-2",
-          cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-teal-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#EBBBA5] first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
           day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-          day_selected: "bg-teal-500 text-white hover:bg-teal-500 hover:text-white focus:bg-teal-500 focus:text-white",
-          day_today: "bg-accent text-accent-foreground",
-          day_outside: "text-muted-foreground opacity-50",
-          day_disabled: "text-muted-foreground opacity-50",
-          day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
+          day_selected:
+            "bg-[#B78160] text-white hover:bg-[#BE8B69] hover:text-white focus:bg-[#BE8B69] focus:text-white",
+          day_today: "bg-[#DCAB90] text-[#2C1D14]",
+          day_outside: "text-[#B78160] opacity-50",
+          day_disabled: "text-[#B78160] opacity-50",
+          day_range_middle:
+            "aria-selected:bg-[#EBBBA5] aria-selected:text-[#2C1D14]",
           day_hidden: "invisible",
           ...classNames,
         }}

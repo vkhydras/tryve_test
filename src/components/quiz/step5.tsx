@@ -1,99 +1,51 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-
-const areasOfConcern = [
-  "Anxiety",
-  "Depression",
-  "Stress",
-  "Relationships",
-  "Self-esteem",
-  "Grief",
-  "Trauma",
-  "Addiction",
-  "Eating disorders",
-  "Anger management",
-  "Career challenges",
-  "Life transitions",
-];
-
-interface Responses {
-  concerns: string[];
-}
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface Step5Props {
-  responses: Responses;
-  onResponseChange: (newResponses: Responses) => void;
+  responses: {
+    preferences: string[];
+  };
+  onResponseChange: (response: { preferences: string[] }) => void;
 }
 
 export default function Step5({ responses, onResponseChange }: Step5Props) {
-  const [concernInput, setConcernInput] = useState("");
+  const preferences = [
+    "Someone who understands LGBTQ+ experiences",
+    "Someone familiar with my cultural background",
+    "Someone experienced in trauma therapy",
+    "Someone who specializes in anxiety or depression",
+    "Someone skilled in relationship or family therapy",
+    "Someone with expertise in mindfulness or holistic approaches",
+    "Someone who can provide faith-based counselling",
+    "I don't have specific preferences",
+  ];
 
-  const handleAddConcern = (concern: string) => {
-    const currentConcerns = responses.concerns || [];
-    onResponseChange({ concerns: [...currentConcerns, concern] });
-    setConcernInput("");
-  };
-
-  const handleRemoveConcern = (concern: string) => {
-    const currentConcerns = responses.concerns || [];
-    onResponseChange({
-      concerns: currentConcerns.filter((c) => c !== concern),
-    });
+  const handlePreferenceChange = (value: string) => {
+    const currentPreferences = responses.preferences || [];
+    const updatedPreferences = currentPreferences.includes(value)
+      ? currentPreferences.filter((item: string) => item !== value)
+      : [...currentPreferences, value];
+    onResponseChange({ preferences: updatedPreferences });
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      <label className="text-lg font-medium text-[#2C1D14]">
+        Do you have any preferences for your therapist? (Select all that apply)
+      </label>
       <div className="space-y-2">
-        <label className="text-sm font-medium text-teal-700">
-          Select or type your areas of concern
-        </label>
-        <div className="relative">
-          <Input
-            value={concernInput}
-            onChange={(e) => setConcernInput(e.target.value)}
-            placeholder="Search and select areas of concern"
-            className="border-teal-300 focus:ring-teal-500"
-          />
-          {concernInput && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-              {areasOfConcern
-                .filter((concern) =>
-                  concern.toLowerCase().includes(concernInput.toLowerCase())
-                )
-                .map((concern) => (
-                  <div
-                    key={concern}
-                    className="px-4 py-2 hover:bg-teal-100 cursor-pointer"
-                    onClick={() => handleAddConcern(concern)}
-                  >
-                    {concern}
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {(responses.concerns || []).map((concern) => (
-            <Badge
-              key={concern}
-              variant="secondary"
-              className="bg-teal-100 text-teal-700"
-            >
-              {concern}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-auto p-0"
-                onClick={() => handleRemoveConcern(concern)}
-              >
-                <X className="h-3 w-3 text-teal-700" />
-              </Button>
-            </Badge>
-          ))}
-        </div>
+        {preferences.map((preference, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <Checkbox
+              id={`preference-${index}`}
+              checked={(responses.preferences || []).includes(preference)}
+              onCheckedChange={() => handlePreferenceChange(preference)}
+            />
+            <Label htmlFor={`preference-${index}`} className="text-[#2C1D14]">
+              {preference}
+            </Label>
+          </div>
+        ))}
       </div>
     </div>
   );

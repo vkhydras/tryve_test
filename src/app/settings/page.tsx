@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pencil } from "lucide-react";
 
 export default function ProfileSettings() {
   const router = useRouter();
@@ -18,6 +17,7 @@ export default function ProfileSettings() {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+    setEmail(e.target.value);
     setHasChanges(true);
   };
 
@@ -78,9 +78,7 @@ export default function ProfileSettings() {
               <Link href="/settings/change-email">Change Email</Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link href="/settings/change-password">
-                Change Password
-              </Link>
+              <Link href="/settings/change-password">Change Password</Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
               <Link href="/settings/view-answers">edit Answers</Link>

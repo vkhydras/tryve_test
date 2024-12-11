@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,18 +57,20 @@ export default function Login() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
+      <div className="container mx-auto px-4 py-8 bg-[#FFF5E6] h-screen">
+        <Card className="max-w-md mx-auto bg-white shadow-lg border-[#DCAB90]">
           <CardHeader>
-            <CardTitle>Login</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-[#2C1D14]">Login</CardTitle>
+            <CardDescription className="text-[#B78160]">
               Welcome back! Please log in to your account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-[#2C1D14]">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -75,10 +78,13 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-[#2C1D14]">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"
@@ -86,16 +92,20 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="border-[#DCAB90] focus:ring-[#B78160] text-[#2C1D14]"
                 />
               </div>
-              <Button type="submit" className="w-full bg-teal-500 text-white">
+              <Button
+                type="submit"
+                className="w-full bg-[#B78160] text-white hover:bg-[#BE8B69]"
+              >
                 Log In
               </Button>
             </form>
             <div className="mt-4 text-center">
-              <p>
+              <p className="text-[#2C1D14]">
                 Don't have an account?{" "}
-                <Link href="/signup" className="text-teal-600 hover:underline">
+                <Link href="/signup" className="text-[#B78160] hover:underline">
                   Sign up
                 </Link>
               </p>
